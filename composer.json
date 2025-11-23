@@ -1,6 +1,6 @@
 {
   "name": "tetrode/chalkmark",
-  "description": "Render Markdown right in your terminal — headings, colors, lists, code blocks\n\n",
+  "description": "Render Markdown right in your terminal / CLI — headings, colors, lists, code blocks",
   "type": "library",
   "version": "1.0.1",
   "license": "MIT",

@@ -11,7 +11,8 @@ Render Markdown right in your terminal — headings, colors, lists, code blocks
 ## Chalkmark supports 
 
 Chalkmark is a small PHP library that renders a large subset of Markdown to plain-text suitable for CLI output, 
-with optional ANSI colors. It is designed to be lightweight and dependency-free.
+with optional ANSI colors. It is designed to be lightweight and dependency-free. An example of the terminal output is 
+shown at the end of this README.
 
 It supports:
 
@@ -96,6 +97,8 @@ composer install
 php tests/show-markdown.php
 php tests/show-own-readme.php
 ```
+
+![Example output](images/example.png)
 
 ## Environment variables
 
