@@ -244,6 +244,14 @@ PHPUnit is configured as a dev dependency. After `composer install` you can run:
 
 Tests include both behavior assertions and a demonstration that writes rendered output to the CLI.
 
+## Versioning
+v1.0.2 
+- Remove deprecated test script for PHP containers, update README structure, add example script and README for demo usage.
+- Add new built-in themes: nord, dracula, gruvbox-dark, solarized-dark, pastel-light, and banner with corresponding tests and README updates
+- Add theming support with built-in themes, overrides, and tests Added Table tests
+
+v1.0.1
+- First public release
 
 ## License
 
