@@ -1,0 +1,118 @@
+# Chalkmark
+
+![Chalkmark](images/chalkmark.png)
+
+----
+
+Render Markdown right in your terminal — headings, colors, lists, code blocks
+
+----
+
+## Chalkmark supports 
+
+Chalkmark is a small PHP library that renders a large subset of Markdown to plain-text suitable for CLI output, 
+with optional ANSI colors. It is designed to be lightweight and dependency-free.
+
+It supports:
+
+- Headings `#` ... `######` (levels 1–6)
+- Horizontal rules as 40+ underscores on a line
+- Unordered lists using `-`, `*`, or `+` (with indentation)
+- Ordered lists like `1.` or nested `1)` … (with indentation)
+- Paragraphs with inline formatting:
+    - code using backticks: `` `code` ``
+    - _italic_: `*text*` or `_text_`
+    - **bold**: `**text**` or `__text__`
+    - ***bold+italic***: `***text***` or `___text___`
+- Code blocks fenced by backticks:  `` ```code``` ``
+- Blockquotes using a pipe-prefix syntax: `| quote` with nesting like `| | nested`
+
+Rendered output ends with a trailing newline and ensures there is a blank line at the end.
+
+## Overview
+
+- Language/stack: PHP 8.2+
+- Package manager: Composer
+- Test framework: PHPUnit 11
+- Autoloading: PSR-4
+- Demo script: `tests/show-fixture-markdown.php` & `tests/show-own-readme.php`
+
+## Requirements
+
+- PHP >= 8.2
+- Composer (for installation and dev tooling)
+
+## Installation
+
+This package is a Composer library. From a project that uses Composer, you can install it with:
+
+```
+composer require tetrode/chalkmark
+```
+
+Note: The package name is taken from `composer.json` (`tetrode/chalkmark`). 
+
+## Usage
+
+Minimal example rendering a file and printing to STDOUT:
+
+```php
+<?php
+use Chalkmark\Chalkmark;
+
+require __DIR__.'/../vendor/autoload.php';
+
+$renderer = new Chalkmark();
+$renderer->displayFile(__DIR__ . '/README.md', STDOUT);
+
+```
+
+Customizing colors or disabling them:
+
+```php
+<?php
+
+use Chalkmark\Chalkmark;
+
+$colors = [
+    'h1' => "\033[1;34m",     // bright blue bold
+    'bullet' => "\033[36m",   // cyan for list bullets
+    'code_inline' => "\033[33m", // yellow for inline code
+    // set any color key to '' (empty) to remove coloring for that element
+];
+
+$renderer = new Chalkmark($colors, $enableColors = true);
+
+// Disable all colors (useful for logs or tests):
+$rendererNoColor = new Chalkmark([], false);
+```
+
+## Command-line demo
+
+This repository includes a tiny demo script you can run locally after installing dependencies:
+
+```
+composer install
+php tests/show-markdown.php
+php tests/show-own-readme.php
+```
+
+## Environment variables
+
+No environment variables are required or used by the library.
+
+## Running tests
+
+PHPUnit is configured as a dev dependency. After `composer install` you can run:
+
+```
+./vendor/bin/phpunit
+```
+
+Tests include both behavior assertions and a demonstration that writes rendered output to the CLI.
+
+
+## License
+
+Chalkmark is made available under the MIT License (MIT). Please see [License File](LICENSE) for more information.
+

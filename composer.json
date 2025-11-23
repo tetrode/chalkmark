@@ -1,0 +1,32 @@
+{
+  "name": "tetrode/chalkmark",
+  "description": "Render Markdown right in your terminal — headings, colors, lists, code blocks\n\n",
+  "type": "library",
+  "version": "1.0.1",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Chalkmark\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Chalkmark\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit tests",
+    "analyse": "vendor/bin/phpstan analyse",
+    "test-php82": "docker compose up php82",
+    "test-php83": "docker compose up php83",
+    "test-php84": "docker compose up php84",
+    "test-php85": "docker compose up php85",
+    "test-all": "XXXcomposer run-script test-php82 && composer run-script test-php83 && composer run-script test-php84 && composer run-script test-php85"
+  }
+}
