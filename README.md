@@ -99,7 +99,16 @@ $rendererNoColor = new Chalkmark([], false);
 
 Chalkmark supports themes. A theme is a simple associative array mapping style keys to ANSI escape sequences. The default theme mirrors the legacy built-in colors.
 
-- Built-in themes: `default`, `monochrome` (disables all colors), `reversed` (headers with colored backgrounds)
+- Built-in themes:
+  - `default` — classic Chalkmark palette
+  - `monochrome` — disables all colors
+  - `reversed` — headers with bright white on colored backgrounds (full‑width bars)
+  - `banner` — strong background bars for headers (like reversed, different aesthetic)
+  - `nord` — cool, subdued blues/cyans; calm aesthetic
+  - `dracula` — vibrant magenta/green/yellow with cyan accents; strong contrast
+  - `gruvbox-dark` — warm earthy yellow/orange/aqua tones; developer friendly
+  - `solarized-dark` — classic blue/cyan/green/yellow; balanced contrast (16‑color)
+  - `pastel-light` — soft rose/peach/mint/sky tones for light terminals
 - Select a theme via the third constructor argument:
 
 ```php
@@ -121,6 +130,38 @@ $renderer = new Chalkmark($overrides, true, 'default');
 // or to max(60, header length) if the terminal width is unknown.
 $renderer = new Chalkmark([], true, 'reversed');
 ```
+
+Theme Gallery (quick preview):
+
+```php
+<?php
+use Chalkmark\Chalkmark;
+use Chalkmark\Theme\ThemeRegistry;
+
+require __DIR__.'/vendor/autoload.php';
+
+$sample = <<<MD
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+Paragraph with *italic*, **bold**, and `inline code`.
+
+- Bullet one
+- Bullet two
+MD;
+
+foreach (ThemeRegistry::listBuiltins() as $name) {
+    echo "\n==== Theme: {$name} ====\n";
+    $renderer = new Chalkmark([], true, $name);
+    echo $renderer->renderString($sample);
+}
+```
+
+Notes on 256‑color usage:
+- Some themes (e.g., nord, dracula, gruvbox-dark, pastel-light) use 256‑color SGR codes (`38;5;NN`). Most modern terminals support these; if your terminal does not, switch to `default`, `monochrome`, or `solarized-dark` for maximum portability.
 
 You can also provide your own theme:
 

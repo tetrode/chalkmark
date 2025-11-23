@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Chalkmark\Tests;
 
 use Chalkmark\Chalkmark;
+use Chalkmark\Theme\ThemeRegistry;
 use PHPUnit\Framework\TestCase;
 
 final class ThemeTest extends TestCase
@@ -100,6 +101,76 @@ final class ThemeTest extends TestCase
         } finally {
             // restore
             if ($prev !== false) {
+                putenv('COLUMNS='.$prev);
+            }
+        }
+    }
+
+    public function testBuiltinsContainNewThemes(): void
+    {
+        $builtins = ThemeRegistry::listBuiltins();
+        $expected = ['nord','dracula','gruvbox-dark','solarized-dark','pastel-light','banner'];
+        foreach ($expected as $name) {
+            $this->assertContains($name, $builtins, "Built-in themes should include {$name}");
+        }
+    }
+
+    public function testThemeRendersAnsiForHeaders(): void
+    {
+        $themes = ['nord','dracula','gruvbox-dark','solarized-dark','pastel-light','banner'];
+        foreach ($themes as $t) {
+            $renderer = new Chalkmark([], true, $t);
+            $out = $renderer->renderString("# Title");
+            $this->assertSame(1, preg_match('/\x1b\[[0-9;]*m/', $out), "Theme {$t} should emit ANSI for headers");
+        }
+    }
+
+    public function testNonBackgroundThemesHaveNoBackgrounds(): void
+    {
+        $themes = ['nord','dracula','gruvbox-dark','solarized-dark','pastel-light'];
+        foreach ($themes as $t) {
+            $renderer = new Chalkmark([], true, $t);
+            $out = $renderer->renderString("# Title\n\nParagraph");
+            $line = strtok($out, "\n"); // first line (header)
+            $this->assertIsString($line);
+            $this->assertSame(0, preg_match('/\x1b\[[^m]*(4[1-6]|10[0-7])m/', (string)$line), "Theme {$t} should not use background colors for headers");
+        }
+    }
+
+    public function testBannerThemeBackgroundsAndWidth(): void
+    {
+        $prev = getenv('COLUMNS');
+        putenv('COLUMNS=60');
+        try {
+            $renderer = new Chalkmark([], true, 'banner');
+            $out = $renderer->renderString("# Title\n\nParagraph only");
+            // Split lines robustly (strtok can be stateful and fragile when blanks exist)
+            $lines = preg_split('/\n/', $out, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+            $this->assertIsArray($lines);
+            $line = $lines[0] ?? null;
+            $this->assertIsString($line);
+            $plain = (string)preg_replace('/\x1b\[[0-9;]*m/', '', (string)$line);
+            $this->assertSame(60, strlen($plain), 'Banner header should be padded to terminal width');
+            // Should include a background code 41-46 or 100-107
+            $this->assertSame(1, preg_match('/\x1b\[[^m]*(4[1-6]|10[0-7])m/', (string)$line));
+
+            // Ensure normal text line (paragraph) has no background
+            // Find the first non-empty, non-ANSI paragraph line after the header
+            $paragraph = null;
+            for ($i = 1; $i < count($lines); $i++) {
+                $l = (string)$lines[$i];
+                $plainL = (string)preg_replace('/\x1b\[[0-9;]*m/', '', $l);
+                if (trim($plainL) !== '') {
+                    $paragraph = $l;
+                    break;
+                }
+            }
+            $this->assertIsString($paragraph);
+            $this->assertSame(0, preg_match('/\x1b\[[^m]*(4[1-6]|10[0-7])m/', (string)$paragraph));
+        } finally {
+            if ($prev === false) {
+                putenv('COLUMNS');
+            } else {
                 putenv('COLUMNS='.$prev);
             }
         }

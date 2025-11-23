@@ -45,7 +45,7 @@ final class ThemeRegistry
             }
         }
 
-        // Try built-in themes directory
+        // Try the built-in themes directory
         $builtin = __DIR__.'/themes/'.basename($name).'.php';
         $palette = self::loadFromFile($builtin);
         if ($palette !== null) {
@@ -73,7 +73,7 @@ final class ThemeRegistry
             if ($f === '.' || $f === '..') {
                 continue;
             }
-            if (substr($f, -4) === '.php') {
+            if (str_ends_with($f, '.php')) {
                 $out[] = substr($f, 0, -4);
             }
         }
@@ -94,9 +94,7 @@ final class ThemeRegistry
         if (!is_file($path)) {
             return null;
         }
-        /** @var mixed $data */
         $data = (static function (string $p) {
-            /** @noinspection PhpIncludeInspection */
             return include $p;
         })($path);
         if (is_array($data)) {
