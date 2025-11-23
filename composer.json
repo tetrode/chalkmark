@@ -26,7 +26,6 @@
     "test-php82": "docker compose up php82",
     "test-php83": "docker compose up php83",
     "test-php84": "docker compose up php84",
-    "test-php85": "docker compose up php85",
-    "test-all": "XXXcomposer run-script test-php82 && composer run-script test-php83 && composer run-script test-php84 && composer run-script test-php85"
+    "test-php85": "docker compose up php85"
   }
 }
