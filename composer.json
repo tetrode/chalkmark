@@ -1,12 +1,24 @@
 {
   "name": "tetrode/chalkmark",
   "description": "Render Markdown right in your terminal / CLI — headings, colors, lists, code blocks",
+  "keywords": [
+    "markdown",
+    "terminal",
+    "cli"
+  ],
   "type": "library",
-  "version": "1.0.1",
+  "version": "v1.0.3",
   "license": "MIT",
   "require": {
     "php": ">=8.2"
   },
+  "authors": [
+    {
+      "name": "Mark Tetrode",
+      "email": "mark@tetrode.org",
+      "homepage": "https://github.com/tetrode"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "Chalkmark\\": "src/"
@@ -19,13 +31,5 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^11"
-  },
-  "scripts": {
-    "test": "vendor/bin/phpunit tests",
-    "analyse": "vendor/bin/phpstan analyse",
-    "test-php82": "docker compose up php82",
-    "test-php83": "docker compose up php83",
-    "test-php84": "docker compose up php84",
-    "test-php85": "docker compose up php85"
   }
 }

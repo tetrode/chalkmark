@@ -13,7 +13,7 @@ final class ChalkmarkTest extends TestCase
 {
     public function testRenderFileProducesExpectedAnsiFreeOutput(): void
     {
-        $renderer = new Chalkmark([], false); // colors disabled for stable assertions
+        $renderer = new Chalkmark(false); // colors disabled for stable assertions
         $path = $this->fixturePath('markdown_sample.md');
         $actual = $renderer->renderFile($path);
 
@@ -80,7 +80,7 @@ final class ChalkmarkTest extends TestCase
 
     public function testDisplayFileWritesToStdout(): void
     {
-        $renderer = new Chalkmark([], false);
+        $renderer = new Chalkmark(false);
         $tmp = $this->fixturePath('markdown_sample.md');
         // Write to a temp stream so we can assert reliably, then echo to CLI
         $stream = fopen('php://temp', 'w+');
@@ -97,7 +97,7 @@ final class ChalkmarkTest extends TestCase
 
     public function testImageLinksRenderToTextColonUrl(): void
     {
-        $renderer = new Chalkmark([], false);
+        $renderer = new Chalkmark(false);
         $path = $this->fixturePath('images.md');
         $actual = $renderer->renderFile($path);
 
@@ -116,7 +116,7 @@ final class ChalkmarkTest extends TestCase
 
     public function testRenderStringMatchesRenderFileForSample(): void
     {
-        $renderer = new Chalkmark([], false);
+        $renderer = new Chalkmark(false);
         $path = $this->fixturePath('markdown_sample.md');
         $fromFile = $renderer->renderFile($path);
         $md = (string)file_get_contents($path);
@@ -126,7 +126,7 @@ final class ChalkmarkTest extends TestCase
 
     public function testRenderStringHandlesTrailingNewlinePresence(): void
     {
-        $renderer = new Chalkmark([], false);
+        $renderer = new Chalkmark(false);
         $mdNoNl = "# Title\n\nParagraph"; // no trailing newline
         $mdWithNl = $mdNoNl."\n"; // with trailing newline
 

@@ -11,7 +11,7 @@ array_shift($argv);
 $theme = array_shift($argv);
 $builtins = ThemeRegistry::listBuiltins();
 if (in_array($theme, $builtins)) {
-    $renderer = new Chalkmark([], true, $theme);
+    $renderer = new Chalkmark(true, $theme);
     $renderer->displayFile(__DIR__.'/../README.md', STDOUT);
 } else {
     echo PHP_EOL."No such theme: {$theme}";

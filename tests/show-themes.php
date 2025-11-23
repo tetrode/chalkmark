@@ -20,6 +20,6 @@ MD;
 
 foreach (ThemeRegistry::listBuiltins() as $name) {
     echo "\n==== Theme: {$name} ====\n";
-    $renderer = new Chalkmark([], true, $name);
+    $renderer = new Chalkmark(true, $name);
     echo $renderer->renderString($sample);
 }

@@ -29,11 +29,11 @@ class Chalkmark implements RendererContext
     private array $palette = [];
 
     /**
-     * @param array<string,string|false|null> $colors Per-run overrides for theme colors
      * @param bool $enableColors Whether to emit ANSI color sequences
      * @param string $theme Name of the theme to use (built-in or registered); also accepts a path to a PHP file returning an array
+     * @param array<string,string|false|null> $colors Per-run overrides for theme colors
      */
-    public function __construct(array $colors = [], bool $enableColors = true, string $theme = 'default')
+    public function __construct(bool $enableColors = true, string $theme = 'default', array $colors = [])
     {
         $this->enableColors = $enableColors;
         // Load theme palette

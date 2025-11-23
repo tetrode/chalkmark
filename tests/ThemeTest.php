@@ -12,7 +12,7 @@ final class ThemeTest extends TestCase
 {
     public function testMonochromeThemeProducesNoAnsi(): void
     {
-        $renderer = new Chalkmark([], true, 'monochrome');
+        $renderer = new Chalkmark(true, 'monochrome');
         $out = $renderer->renderString("# Title\n\nParagraph");
         // No ANSI escape sequences should be present
         $this->assertSame(0, preg_match('/\x1b\[[0-9;]*m/', $out));
@@ -22,10 +22,10 @@ final class ThemeTest extends TestCase
     public function testOverridesMergeOnTopOfTheme(): void
     {
         // Start with monochrome (no colors), then override h1 to colored
-        $renderer = new Chalkmark([
+        $renderer = new Chalkmark(true, 'monochrome', [
             'h1' => "\033[1;31m",
             'text' => '',
-        ], true, 'monochrome');
+        ]);
         $out = $renderer->renderString("# Title\nText");
         // Expect at least one ANSI sequence because h1 is colored
         $this->assertSame(1, preg_match('/\x1b\[[0-9;]*m/', $out));
@@ -33,7 +33,7 @@ final class ThemeTest extends TestCase
 
     public function testReversedThemeBackgroundsForHeaders(): void
     {
-        $renderer = new Chalkmark([], true, 'reversed');
+        $renderer = new Chalkmark(true, 'reversed');
         $out = $renderer->renderString("# H1\n\n## H2\n\n### H3\n\nParagraph");
         // Look for background color codes 41, 42, 43 at least once
         $this->assertSame(1, preg_match('/\x1b\[[^m]*;41m/', $out));
@@ -44,7 +44,7 @@ final class ThemeTest extends TestCase
     public function testReversedThemeDoesNotAffectTextColoring(): void
     {
         // Ensure normal text still uses 'text' color (which resets to default, not background)
-        $renderer = new Chalkmark([], true, 'reversed');
+        $renderer = new Chalkmark(true, 'reversed');
         $out = $renderer->renderString("Paragraph only");
         // Should not include any background color codes 41-46 for plain text
         $this->assertSame(0, preg_match('/\x1b\[[0-9;]*4[1-6]m/', $out));
@@ -56,7 +56,7 @@ final class ThemeTest extends TestCase
         $prev = getenv('COLUMNS');
         putenv('COLUMNS=60');
         try {
-            $renderer = new Chalkmark([], true, 'reversed');
+            $renderer = new Chalkmark(true, 'reversed');
             $out = $renderer->renderString("# Title");
             // Take first rendered line
             $line = strtok($out, "\n");
@@ -85,7 +85,7 @@ final class ThemeTest extends TestCase
         }
 
         try {
-            $renderer = new Chalkmark([], true, 'reversed');
+            $renderer = new Chalkmark(true, 'reversed');
             // Short header should be padded to 60
             $out = $renderer->renderString("# H1");
             $line = strtok($out, "\n");
@@ -119,7 +119,7 @@ final class ThemeTest extends TestCase
     {
         $themes = ['nord','dracula','gruvbox-dark','solarized-dark','pastel-light','banner'];
         foreach ($themes as $t) {
-            $renderer = new Chalkmark([], true, $t);
+            $renderer = new Chalkmark(true, $t);
             $out = $renderer->renderString("# Title");
             $this->assertSame(1, preg_match('/\x1b\[[0-9;]*m/', $out), "Theme {$t} should emit ANSI for headers");
         }
@@ -129,7 +129,7 @@ final class ThemeTest extends TestCase
     {
         $themes = ['nord','dracula','gruvbox-dark','solarized-dark','pastel-light'];
         foreach ($themes as $t) {
-            $renderer = new Chalkmark([], true, $t);
+            $renderer = new Chalkmark(true, $t);
             $out = $renderer->renderString("# Title\n\nParagraph");
             $line = strtok($out, "\n"); // first line (header)
             $this->assertIsString($line);
@@ -142,7 +142,7 @@ final class ThemeTest extends TestCase
         $prev = getenv('COLUMNS');
         putenv('COLUMNS=60');
         try {
-            $renderer = new Chalkmark([], true, 'banner');
+            $renderer = new Chalkmark(true, 'banner');
             $out = $renderer->renderString("# Title\n\nParagraph only");
             // Split lines robustly (strtok can be stateful and fragile when blanks exist)
             $lines = preg_split('/\n/', $out, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);

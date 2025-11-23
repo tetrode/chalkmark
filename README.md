@@ -14,7 +14,13 @@ Chalkmark is a small PHP library that renders a large subset of Markdown to plai
 with optional ANSI colors. It is designed to be lightweight and dependency-free. An example of the terminal output is 
 shown at the end of this README.
 
-It supports:
+### Rationale
+Embedding Chalkmark into your PHP Docker image turns the container into a self‑documenting, self‑supporting product.
+Operators can quickly discover how to use the image, read the full `README.md` directly in the terminal (with clear
+formatting and optional colors), and run the app without leaving the CLI. This reduces support tickets and
+misconfigurations, while improving developer experience and adoption.
+
+Chalkmark supports:
 
 - Headings `#` ... `######` (levels 1–6)
 - Horizontal rules as 40+ underscores on a line
@@ -27,7 +33,7 @@ It supports:
     - ***bold+italic***: `***text***` or `___text___`
 - Code blocks fenced by backticks:  `` ```code``` ``
 - Blockquotes using a pipe-prefix syntax: `| quote` with nesting like `| | nested`
-- Tables using pipe syntax (GitHub-style). Table blocks are normalized: column widths are computed, cells are padded, and alignment markers (`:---`, `:---:`, `---:`) control left/center/right alignment. The separator line is rendered with dashes only (colons are not shown).
+- Tables using pipe syntax (GitHub-style). Table blocks are normalized: column widths are computed, cells are padded, and alignment markers (`:---`, `:---:`, `---:`) control left/center/right alignment.
 
 Notes on header background bars (reversed theme):
 - When using the `reversed` theme, heading lines (h1–h6) are rendered with a colored background.
@@ -37,17 +43,9 @@ Notes on header background bars (reversed theme):
 
 Rendered output ends with a trailing newline and ensures there is a blank line at the end.
 
-See the [demo script](tests/show-markdown.php) for a full example.
-
-### Rationale
-Embedding Chalkmark into your PHP Docker image turns the container into a self‑documenting, self‑supporting product.
-Operators can quickly discover how to use the image, read the full `README.md` directly in the terminal (with clear
-formatting and optional colors), and run the app without leaving the CLI. This reduces support tickets and
-misconfigurations, while improving developer experience and adoption.
-
 ## Requirements
 
-- Language/stack: PHP 8.2+
+- PHP version: PHP 8.2+
 - Package manager: Composer
 - Test framework: PHPUnit 11
 - Autoloading: PSR-4
@@ -93,10 +91,10 @@ $colors = [
     // set any color key to '' (empty) to remove coloring for that element
 ];
 
-$renderer = new Chalkmark($colors, $enableColors = true);
+$renderer = new Chalkmark($enableColors = true, 'default', $colors);
 
 // Disable all colors (useful for logs or tests):
-$rendererNoColor = new Chalkmark([], false);
+$rendererNoColor = new Chalkmark(false);
 ```
 
 ### Theming
@@ -114,26 +112,26 @@ The default theme mirrors the legacy built-in colors.
   - `gruvbox-dark` — warm earthy yellow/orange/aqua tones; developer friendly
   - `solarized-dark` — classic blue/cyan/green/yellow; balanced contrast (16‑color)
   - `pastel-light` — soft rose/peach/mint/sky tones for light terminals
-- Select a theme via the third constructor argument:
+- Select a theme via the second constructor argument:
 
 ```php
 use Chalkmark\Chalkmark;
 
 // Use the built-in monochrome theme but keep colors enabled (no ANSI will be emitted):
-$renderer = new Chalkmark([], true, 'monochrome');
+$renderer = new Chalkmark(true, 'monochrome');
 
 // Use default theme but override some keys:
 $overrides = [
     'h1' => "\033[1;34m",     // bright blue bold
     'bullet' => "\033[36m",   // cyan
 ];
-$renderer = new Chalkmark($overrides, true, 'default');
+$renderer = new Chalkmark(true, 'default', $overrides);
 
 // Use reversed theme: like default but headers (h1..h6) use bright white (no bold)
 // on colored backgrounds (red, green, yellow, blue, magenta, cyan).
 // The background bar will expand to the terminal width (from $COLUMNS),
 // or to max(60, header length) if the terminal width is unknown.
-$renderer = new Chalkmark([], true, 'reversed');
+$renderer = new Chalkmark(true, 'reversed');
 ```
 
 Theme Gallery (quick preview):
@@ -160,7 +158,7 @@ MD;
 
 foreach (ThemeRegistry::listBuiltins() as $name) {
     echo "\n==== Theme: {$name} ====\n";
-    $renderer = new Chalkmark([], true, $name);
+    $renderer = new Chalkmark(true, $name);
     echo $renderer->renderString($sample);
 }
 ```
@@ -181,7 +179,7 @@ ThemeRegistry::register('mytheme', [
     // ... other keys
 ]);
 
-$renderer = new Chalkmark([], true, 'mytheme');
+$renderer = new Chalkmark(true, 'mytheme');
 ```
 
 2) Load from a PHP file that returns an array:
@@ -194,7 +192,7 @@ return [
 ];
 
 // usage
-$renderer = new Chalkmark([], true, __DIR__.'/mytheme.php');
+$renderer = new Chalkmark(true, __DIR__.'/mytheme.php');
 ```
 
 Override precedence: built-in theme < registered/file theme < per-run `$colors` overrides. Setting an override value to `''`, `false`, or `null` disables that style.
@@ -245,7 +243,7 @@ PHPUnit is configured as a dev dependency. After `composer install` you can run:
 Tests include both behavior assertions and a demonstration that writes rendered output to the CLI.
 
 ## Versioning
-v1.0.2 
+v1.0.3 
 - Remove deprecated test script for PHP containers, update README structure, add example script and README for demo usage.
 - Add new built-in themes: nord, dracula, gruvbox-dark, solarized-dark, pastel-light, and banner with corresponding tests and README updates
 - Add theming support with built-in themes, overrides, and tests Added Table tests

@@ -18,7 +18,7 @@ final class TableTest extends TestCase
 
     public function testMisformattedTableIsNormalized(): void
     {
-        $renderer = new Chalkmark([], false);
+        $renderer = new Chalkmark(false);
         $path = $this->fixturePath('misformatted_table.md');
         $actual = $renderer->renderFile($path);
 
