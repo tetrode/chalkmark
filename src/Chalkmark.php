@@ -109,6 +109,11 @@ class Chalkmark implements RendererContext
             }
         }
 
+        // Flush any deferred structures (like tables) at EOF
+        if ($state->collectingTable && $state->tableHandler instanceof TableStrategy) {
+            $state->tableHandler->finalize($this, $state, $out);
+        }
+
         // Ensure renderer ends with a blank line then newline, as tests expect
         if (empty($out) || end($out) !== '') {
             $out[] = '';

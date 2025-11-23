@@ -20,6 +20,8 @@ final class RenderState
     public array $tableRows = [];
     /** @var list<'l'|'c'|'r'> */
     public array $tableAlign = [];
+    /** @var mixed Reference to active table handler (strategy) to allow final flush at EOF */
+    public $tableHandler = null;
 
     public function resetTable(): void
     {
@@ -27,6 +29,7 @@ final class RenderState
         $this->tablePrefix = '';
         $this->tableRows = [];
         $this->tableAlign = [];
+        $this->tableHandler = null;
     }
 
     public function inCode(): bool

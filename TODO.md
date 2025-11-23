@@ -1,3 +1,3 @@
 # TO DO LIST
 
-* none for the moment
+* Table support is not fully implemented yet, 

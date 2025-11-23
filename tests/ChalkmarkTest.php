@@ -63,10 +63,10 @@ final class ChalkmarkTest extends TestCase
             "Tables\n".
             "\n".
             "| Left aligned | Centered | Right aligned |\n".
-            "| :-------------|:--------:|--------------:|\n".
-            "| Apple        | Red      |           10 |\n".
-            "| Banana       | Yellow   |            2 |\n".
-            "| Cherry       | Dark Red |            6 |\n".
+            "| ------------ | -------- | ------------- |\n".
+            "| Apple        |   Red    |            10 |\n".
+            "| Banana       |  Yellow  |             2 |\n".
+            "| Cherry       | Dark Red |             6 |\n".
             "\n";
         // renderer ends with a trailing newline
 

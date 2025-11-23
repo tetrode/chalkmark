@@ -27,7 +27,7 @@ It supports:
     - ***bold+italic***: `***text***` or `___text___`
 - Code blocks fenced by backticks:  `` ```code``` ``
 - Blockquotes using a pipe-prefix syntax: `| quote` with nesting like `| | nested`
-- Tables using pipe syntax (GitHub-style). Lines starting with `|` are rendered preserving spacing and with inline formatting inside cells. Alignment markers like `:---`, `:---:` and `---:` are passed through as authored.
+- Tables using pipe syntax (GitHub-style). Table blocks are normalized: column widths are computed, cells are padded, and alignment markers (`:---`, `:---:`, `---:`) control left/center/right alignment. The separator line is rendered with dashes only (colons are not shown).
 
 Rendered output ends with a trailing newline and ensures there is a blank line at the end.
 
@@ -117,10 +117,10 @@ Output (no colors):
 
 ```
 | Left aligned | Centered | Right aligned |
-| :-------------|:--------:|--------------:|
-| Apple        | Red      |           10 |
-| Banana       | Yellow   |            2 |
-| Cherry       | Dark Red |            6 |
+| ------------ | -------- | ------------- |
+| Apple        |   Red    |            10 |
+| Banana       |  Yellow  |             2 |
+| Cherry       | Dark Red |             6 |
 ```
 
 ## Environment variables
