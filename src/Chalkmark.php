@@ -13,6 +13,7 @@ use Chalkmark\Strategy\LineStrategy;
 use Chalkmark\Strategy\OrderedListStrategy;
 use Chalkmark\Strategy\ParagraphStrategy;
 use Chalkmark\Strategy\UnorderedListStrategy;
+use Chalkmark\Strategy\TableStrategy;
 use RuntimeException;
 
 use const STDOUT;
@@ -130,6 +131,7 @@ class Chalkmark implements RendererContext
             new HeadingStrategy(),
             new OrderedListStrategy(),
             new UnorderedListStrategy(),
+            new TableStrategy(),        // render simple table lines starting with '|'
             new BlankLineStrategy(),
             new ParagraphStrategy(),
         ];
