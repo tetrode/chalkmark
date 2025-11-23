@@ -37,18 +37,24 @@ Notes on header background bars (reversed theme):
 
 Rendered output ends with a trailing newline and ensures there is a blank line at the end.
 
-## Overview
+See the [demo script](tests/show-markdown.php) for a full example.
+
+### Rationale
+Embedding Chalkmark into your PHP Docker image turns the container into a self‑documenting, self‑supporting product.
+Operators can quickly discover how to use the image, read the full `README.md` directly in the terminal (with clear
+formatting and optional colors), and run the app without leaving the CLI. This reduces support tickets and
+misconfigurations, while improving developer experience and adoption.
+
+## Requirements
 
 - Language/stack: PHP 8.2+
 - Package manager: Composer
 - Test framework: PHPUnit 11
 - Autoloading: PSR-4
-- Demo script: `tests/show-fixture-markdown.php` & `tests/show-own-readme.php`
-
-## Requirements
-
-- PHP >= 8.2
-- Composer (for installation and dev tooling)
+- Demo scripts: 
+  - `tests/show-fixture-markdown.php`
+  - `tests/show-own-readme.php`
+  - `tests/show-themes.php`
 
 ## Installation
 
@@ -57,8 +63,6 @@ This package is a Composer library. From a project that uses Composer, you can i
 ```
 composer require tetrode/chalkmark
 ```
-
-Note: The package name is taken from `composer.json` (`tetrode/chalkmark`). 
 
 ## Usage
 
@@ -97,7 +101,8 @@ $rendererNoColor = new Chalkmark([], false);
 
 ### Theming
 
-Chalkmark supports themes. A theme is a simple associative array mapping style keys to ANSI escape sequences. The default theme mirrors the legacy built-in colors.
+Chalkmark supports themes. A theme is a simple associative array mapping style keys to ANSI escape sequences. 
+The default theme mirrors the legacy built-in colors.
 
 - Built-in themes:
   - `default` — classic Chalkmark palette
@@ -201,6 +206,7 @@ This repository includes a tiny demo script you can run locally after installing
 ```
 composer install
 php tests/show-markdown.php
+php tests/show-themes.php
 php tests/show-own-readme.php
 ```
 
@@ -227,10 +233,6 @@ Output (no colors):
 | Banana       |  Yellow  |             2 |
 | Cherry       | Dark Red |             6 |
 ```
-
-## Environment variables
-
-No environment variables are required or used by the library.
 
 ## Running tests
 

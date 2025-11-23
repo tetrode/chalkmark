@@ -15,7 +15,7 @@ if (in_array($theme, $builtins)) {
     $renderer->displayFile(__DIR__.'/../README.md', STDOUT);
 } else {
     echo PHP_EOL."No such theme: {$theme}";
-    echo PHP_EOL."The following themes are available:".implode(', ', $builtins);
+    echo PHP_EOL."The following themes are available: ".implode(', ', $builtins);
     echo PHP_EOL;
 }
 
