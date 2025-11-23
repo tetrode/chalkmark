@@ -29,6 +29,12 @@ It supports:
 - Blockquotes using a pipe-prefix syntax: `| quote` with nesting like `| | nested`
 - Tables using pipe syntax (GitHub-style). Table blocks are normalized: column widths are computed, cells are padded, and alignment markers (`:---`, `:---:`, `---:`) control left/center/right alignment. The separator line is rendered with dashes only (colons are not shown).
 
+Notes on header background bars (reversed theme):
+- When using the `reversed` theme, heading lines (h1–h6) are rendered with a colored background.
+- The colored background extends to the terminal width when Chalkmark can determine it via the `COLUMNS` environment variable.
+- If the terminal width is unknown, Chalkmark pads the colored bar to `max(60, visible heading length)` characters.
+- This background fill applies only when the active heading style actually includes a background color and colors are enabled; other themes are unaffected.
+
 Rendered output ends with a trailing newline and ensures there is a blank line at the end.
 
 ## Overview
@@ -88,6 +94,64 @@ $renderer = new Chalkmark($colors, $enableColors = true);
 // Disable all colors (useful for logs or tests):
 $rendererNoColor = new Chalkmark([], false);
 ```
+
+### Theming
+
+Chalkmark supports themes. A theme is a simple associative array mapping style keys to ANSI escape sequences. The default theme mirrors the legacy built-in colors.
+
+- Built-in themes: `default`, `monochrome` (disables all colors), `reversed` (headers with colored backgrounds)
+- Select a theme via the third constructor argument:
+
+```php
+use Chalkmark\Chalkmark;
+
+// Use the built-in monochrome theme but keep colors enabled (no ANSI will be emitted):
+$renderer = new Chalkmark([], true, 'monochrome');
+
+// Use default theme but override some keys:
+$overrides = [
+    'h1' => "\033[1;34m",     // bright blue bold
+    'bullet' => "\033[36m",   // cyan
+];
+$renderer = new Chalkmark($overrides, true, 'default');
+
+// Use reversed theme: like default but headers (h1..h6) use bright white (no bold)
+// on colored backgrounds (red, green, yellow, blue, magenta, cyan).
+// The background bar will expand to the terminal width (from $COLUMNS),
+// or to max(60, header length) if the terminal width is unknown.
+$renderer = new Chalkmark([], true, 'reversed');
+```
+
+You can also provide your own theme:
+
+1) Register at runtime:
+
+```php
+use Chalkmark\Theme\ThemeRegistry;
+
+ThemeRegistry::register('mytheme', [
+    'h1' => "\033[1;35m",
+    'text' => "\033[0m",
+    // ... other keys
+]);
+
+$renderer = new Chalkmark([], true, 'mytheme');
+```
+
+2) Load from a PHP file that returns an array:
+
+```php
+// mytheme.php
+return [
+    'h1' => "\033[1;35m",
+    'text' => "\033[0m",
+];
+
+// usage
+$renderer = new Chalkmark([], true, __DIR__.'/mytheme.php');
+```
+
+Override precedence: built-in theme < registered/file theme < per-run `$colors` overrides. Setting an override value to `''`, `false`, or `null` disables that style.
 
 ## Command-line demo
 

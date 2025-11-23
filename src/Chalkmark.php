@@ -25,40 +25,32 @@ class Chalkmark implements RendererContext
 {
     private bool $enableColors;
 
-    /** @var array<string,string> */
-    private array $defaultColors = [
-        'h1' => "\033[1;31m", // bold red
-        'h2' => "\033[1;32m", // bold green
-        'h3' => "\033[1;33m", // bold yellow
-        'h4' => "\033[1;34m", // bold blue
-        'h5' => "\033[1;35m", // bold magenta
-        'h6' => "\033[1;36m", // bold cyan
-        'bullet' => "\033[35m", // magenta
-        'code' => "\033[90m", // bright black (gray)
-        'code_inline' => "\033[33m",
-        'text' => "\033[0m", // default (no extra styling)
-        'ordered' => "\033[36m",
-        'hr' => "\033[2m",
-        'italic' => "\033[3m",
-        'bold' => "\033[1m",
-        'bold_italic' => "\033[1;3m",
-    ];
+    /** @var array<string,string> Active color palette resolved from a theme */
+    private array $palette = [];
 
-    public function __construct(array $colors = [], bool $enableColors = true)
+    /**
+     * @param array<string,string|false|null> $colors Per-run overrides for theme colors
+     * @param bool $enableColors Whether to emit ANSI color sequences
+     * @param string $theme Name of the theme to use (built-in or registered); also accepts a path to a PHP file returning an array
+     */
+    public function __construct(array $colors = [], bool $enableColors = true, string $theme = 'default')
     {
         $this->enableColors = $enableColors;
-        // Palette is the default; any provided $colors override these defaults.
+        // Load theme palette
+        $this->palette = \Chalkmark\Theme\ThemeRegistry::get($theme);
+
+        // Apply overrides on top of theme palette
         foreach ($colors as $key => $value) {
             if (!is_string($key)) {
                 continue; // ignore non-string keys
             }
             if ($value === null || $value === false) {
                 // Allow disabling a color by setting it to null/false
-                $this->defaultColors[$key] = '';
+                $this->palette[$key] = '';
                 continue;
             }
             // Cast everything else to string (e.g., custom ANSI sequence or empty string)
-            $this->defaultColors[$key] = (string)$value;
+            $this->palette[$key] = (string)$value;
         }
     }
 
@@ -171,7 +163,7 @@ class Chalkmark implements RendererContext
         if (!$this->enableColors) {
             return $text;
         }
-        $start = $this->defaultColors[$key] ?? '';
+        $start = $this->palette[$key] ?? '';
         if ($start === '') {
             return $text;
         }
@@ -245,6 +237,18 @@ class Chalkmark implements RendererContext
         }
 
         return $text;
+    }
+
+    // --- RendererContext extras ---
+
+    public function colorsEnabled(): bool
+    {
+        return $this->enableColors;
+    }
+
+    public function getStyle(string $key): string
+    {
+        return $this->palette[$key] ?? '';
     }
 
     /**
